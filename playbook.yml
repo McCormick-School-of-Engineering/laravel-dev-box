@@ -5,6 +5,10 @@
   become_user: root
 
   pre_tasks:
+   - name: "Pre-install libpq-dev"
+     ansible.builtin.apt:
+      name:
+        - libpq-dev
    - name: "Install PIP"
      ansible.builtin.apt: name=pip state=present
    - name: "Install Python packages"
@@ -30,6 +34,7 @@
      ansible.builtin.apt:
       name:
         - yarn
+        - python2
         - acl
         - ruby
         - ruby-dev
@@ -64,6 +69,10 @@
       name: bundler
       state: latest
       user_install: false
+   - name: "Install Composer"
+     shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+     args:
+      creates: /usr/local/bin/composer
    - name: "Mailcatcher: install gem"
      community.general.gem:
       name: mailcatcher
