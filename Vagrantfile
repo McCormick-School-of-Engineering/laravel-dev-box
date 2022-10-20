@@ -2,9 +2,9 @@ Vagrant.configure("2") do |config|
 
   arch = ENV['ARCH'] || ''
   if arch == ''
-    config.vm.box = 'bento/ubuntu-20.04'
-  else
     config.vm.box = 'bento/ubuntu-20.04-arm64'
+  else
+    config.vm.box = 'bento/ubuntu-20.04'
   end
   
   config.vm.provision "ansible_local" do |ansible|
@@ -26,11 +26,14 @@ Vagrant.configure("2") do |config|
 
     v.name = hostname
      
+    v.update_guest_tools = true
+    
     host = RbConfig::CONFIG['host_os']
 
     # Give VM 1/4 system memory & access to all cpu cores on the host
     if host =~ /darwin/
-      cpus = `sysctl -n hw.ncpu`.to_i
+      cpus = 8
+      #cpus = `sysctl -n hw.ncpu`.to_i
       # sysctl returns Bytes and we need to convert to MB
       mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 2
     elsif host =~ /linux/
